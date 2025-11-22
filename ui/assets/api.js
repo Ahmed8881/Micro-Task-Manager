@@ -4,7 +4,7 @@
  */
 
 const API = {
-    baseURL: '/backend/api.php',
+    baseURL: '../backend/api.php',
     
     // Generic AJAX request handler
     request: function(endpoint, options = {}) {

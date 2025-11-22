@@ -30,9 +30,17 @@ $request_uri = $_SERVER['REQUEST_URI'];
 $path = parse_url($request_uri, PHP_URL_PATH);
 
 // Remove base path if running in subdirectory
-$base_path = '/api';
-if (strpos($path, $base_path) === 0) {
-    $path = substr($path, strlen($base_path));
+$script_name = $_SERVER['SCRIPT_NAME']; // e.g., /micro-task-manager/backend/api.php
+$base_dir = dirname($script_name); // e.g., /micro-task-manager/backend
+
+// Remove the base directory from the path
+if (strpos($path, $base_dir) === 0) {
+    $path = substr($path, strlen($base_dir));
+}
+
+// Remove script name if present
+if (strpos($path, '/api.php') === 0) {
+    $path = substr($path, strlen('/api.php'));
 }
 
 // Remove leading and trailing slashes
