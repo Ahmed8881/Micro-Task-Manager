@@ -1,0 +1,581 @@
+{
+	"info": {
+		"_postman_id": "12345678-1234-1234-1234-123456789012",
+		"name": "Micro Task Manager API",
+		"description": "Complete API collection for Micro Task Manager - A professional Kanban task management system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories"
+							]
+						},
+						"description": "Retrieve all categories with their colors and creation dates."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Development\",\n  \"color\": \"#10B981\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories"
+							]
+						},
+						"description": "Create a new category with name and optional color."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/categories/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"1"
+							]
+						},
+						"description": "Delete a category by ID. Tasks with this category will have category_id set to NULL."
+					},
+					"response": []
+				}
+			],
+			"description": "Category management endpoints for organizing tasks"
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Get All Tasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks"
+							]
+						},
+						"description": "Get all tasks with pagination and filtering support."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tasks with Filters",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks?status=todo&priority=High&search=bug&category_id=1&assigned_to=john&sort=due_date&page=1&per_page=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "todo",
+									"description": "Filter by status: todo, in_progress, done"
+								},
+								{
+									"key": "priority",
+									"value": "High",
+									"description": "Filter by priority: High, Medium, Low"
+								},
+								{
+									"key": "search",
+									"value": "bug",
+									"description": "Search in title and description"
+								},
+								{
+									"key": "category_id",
+									"value": "1",
+									"description": "Filter by category ID"
+								},
+								{
+									"key": "assigned_to",
+									"value": "john",
+									"description": "Filter by assignee"
+								},
+								{
+									"key": "sort",
+									"value": "due_date",
+									"description": "Sort by: due_date, priority, created_at, title"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number for pagination"
+								},
+								{
+									"key": "per_page",
+									"value": "20",
+									"description": "Items per page (max 100)"
+								}
+							]
+						},
+						"description": "Get tasks with various filters and sorting options."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Task",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"1"
+							]
+						},
+						"description": "Get a single task by ID with all details including subtasks and comments."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Fix login bug\",\n  \"description\": \"Users cannot login with special characters in their passwords\",\n  \"priority\": \"High\",\n  \"status\": \"todo\",\n  \"category_id\": 1,\n  \"due_date\": \"2025-12-01\",\n  \"assigned_to\": \"john.doe@example.com\",\n  \"subtasks\": [\n    {\n      \"title\": \"Investigate the root cause\"\n    },\n    {\n      \"title\": \"Write unit tests\"\n    },\n    {\n      \"title\": \"Implement the fix\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks"
+							]
+						},
+						"description": "Create a new task with optional subtasks."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Fix login bug - Updated\",\n  \"description\": \"Updated description with more details\",\n  \"priority\": \"Medium\",\n  \"status\": \"in_progress\",\n  \"assigned_to\": \"jane.smith@example.com\",\n  \"subtasks\": [\n    {\n      \"title\": \"Investigate the root cause\",\n      \"is_done\": 1\n    },\n    {\n      \"title\": \"Write unit tests\",\n      \"is_done\": 0\n    },\n    {\n      \"title\": \"Implement the fix\",\n      \"is_done\": 0\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"1"
+							]
+						},
+						"description": "Update an existing task. Can update any field including subtasks."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"1"
+							]
+						},
+						"description": "Delete a task and all associated subtasks and comments."
+					},
+					"response": []
+				},
+				{
+					"name": "Move Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"done\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/1/move",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"1",
+								"move"
+							]
+						},
+						"description": "Move a task to a different status (for drag & drop functionality)."
+					},
+					"response": []
+				},
+				{
+					"name": "Export Tasks to CSV",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/export",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"export"
+							]
+						},
+						"description": "Export all tasks to CSV format."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Task Activity Log",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/1/activity",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"1",
+								"activity"
+							]
+						},
+						"description": "Get the activity log for a specific task."
+					},
+					"response": []
+				}
+			],
+			"description": "Task management endpoints for CRUD operations and status changes"
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Get Task Comments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/1/comments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"1",
+								"comments"
+							]
+						},
+						"description": "Get all comments for a specific task."
+					},
+					"response": []
+				},
+				{
+					"name": "Add Comment to Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"author\": \"John Doe\",\n  \"content\": \"Great progress on this task! The login fix is working well in my testing.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/1/comments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"1",
+								"comments"
+							]
+						},
+						"description": "Add a new comment to a specific task."
+					},
+					"response": []
+				}
+			],
+			"description": "Comment management for task collaboration"
+		},
+		{
+			"name": "Subtasks",
+			"item": [
+				{
+					"name": "Update Subtask",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"is_done\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/subtasks/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subtasks",
+								"1"
+							]
+						},
+						"description": "Toggle subtask completion or update title."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Subtask Title",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated subtask title\",\n  \"is_done\": 0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/subtasks/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subtasks",
+								"1"
+							]
+						},
+						"description": "Update subtask title and completion status."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Subtask",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/subtasks/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subtasks",
+								"1"
+							]
+						},
+						"description": "Delete a subtask by ID."
+					},
+					"response": []
+				}
+			],
+			"description": "Subtask management for task breakdown"
+		},
+		{
+			"name": "Real-time Updates",
+			"item": [
+				{
+					"name": "Server-Sent Events Stream",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "text/event-stream"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/stream/updates",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stream",
+								"updates"
+							]
+						},
+						"description": "Connect to Server-Sent Events stream for real-time updates. Note: This may not work properly in Postman, use browser or SSE client."
+					},
+					"response": []
+				}
+			],
+			"description": "Real-time update endpoints using Server-Sent Events"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Pre-request script for authentication or common headers",
+					"// Add any authentication tokens or common headers here"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"pm.test(\"Response time is less than 2000ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"});",
+					"",
+					"pm.test(\"Response has JSON structure\", function () {",
+					"    pm.response.to.have.jsonBody();",
+					"});",
+					"",
+					"pm.test(\"Response has status field\", function () {",
+					"    const jsonData = pm.response.json();",
+					"    pm.expect(jsonData).to.have.property('status');",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost/micro-task-manager/backend/api.php",
+			"description": "Base URL for the Micro Task Manager API. Update this to match your server configuration."
+		}
+	]
+}
