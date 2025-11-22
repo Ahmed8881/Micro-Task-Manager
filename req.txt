@@ -1,0 +1,182 @@
+Build a complete Micro Task Manager (mini Trello) web app with the following specs. Use PHP (Vanilla PHP, no frameworks), MySQL, Tailwind CSS, HTML, JavaScript and jQuery. Provide all backend and frontend code, SQL schema and seed data, and a README with setup steps and Postman collection.
+
+--- PROJECT OVERVIEW ---
+Name: Micro Task Manager
+Goal: Single-page Kanban task manager with REST API backend and a dynamic Tailwind + jQuery frontend.
+
+--- DATABASE (MySQL) ---
+Database name: task_manager
+Tables:
+1) tasks
+  - id INT AUTO_INCREMENT PRIMARY KEY
+  - title VARCHAR(255) NOT NULL
+  - description TEXT
+  - priority ENUM('Low','Medium','High') DEFAULT 'Medium'
+  - due_date DATE NULL
+  - status ENUM('todo','in_progress','done') DEFAULT 'todo'
+  - category_id INT NULL
+  - assigned_to VARCHAR(255) NULL
+  - created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  - updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+2) categories
+  - id INT AUTO_INCREMENT PRIMARY KEY
+  - name VARCHAR(100) NOT NULL UNIQUE
+  - created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+3) subtasks
+  - id INT AUTO_INCREMENT PRIMARY KEY
+  - task_id INT NOT NULL
+  - title VARCHAR(255) NOT NULL
+  - is_done TINYINT(1) DEFAULT 0
+
+4) comments
+  - id INT AUTO_INCREMENT PRIMARY KEY
+  - task_id INT NOT NULL
+  - author VARCHAR(255)
+  - content TEXT
+  - created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+5) activity_log
+  - id INT AUTO_INCREMENT PRIMARY KEY
+  - task_id INT NULL
+  - action VARCHAR(100)  -- e.g., "created", "updated", "deleted", "moved"
+  - details TEXT
+  - created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+Provide SQL file with CREATE TABLE statements and sample seed data (3 categories, 6 tasks across statuses, few subtasks, comments, activities).
+
+--- API (PHP) ---
+Base URL: /api/
+
+General API rules:
+- Use JSON request bodies where applicable (POST/PUT).
+- Use prepared statements for all DB queries.
+- Return JSON `{ "status": "success"|"error", "data": ..., "message": "...", "code": HTTP_CODE }`.
+- Implement proper CORS headers and method handling (OPTIONS, GET, POST, PUT, DELETE).
+- Validate inputs and return 400 on bad requests, 404 for not found.
+
+Endpoints:
+
+1) Categories
+- GET /api/categories
+  -> list categories
+- POST /api/categories
+  Body: { "name": "New Category" }
+- DELETE /api/categories/{id}
+
+2) Tasks
+- GET /api/tasks
+  Query params: status, category_id, search, priority, assigned_to, sort (due_date|priority|created_at), page, per_page
+  -> supports pagination and returns `{ pagination: { total, page, per_page } }`
+- GET /api/tasks/{id}
+  -> returns task with subtasks and comments
+- POST /api/tasks
+  Body: { title, description, priority, due_date, status, category_id, assigned_to, subtasks: [{title}, ...] }
+  -> create task + subtasks, add activity log
+- PUT /api/tasks/{id}
+  Body: partial or full task fields, also allow subtasks update (create/update/delete)
+  -> update and return updated task, log activity
+- DELETE /api/tasks/{id}
+  -> delete task, subtasks, comments, log activity
+- POST /api/tasks/{id}/move
+  Body: { status: 'in_progress' | 'done' | 'todo' }
+  -> change status, log activity
+
+3) Subtasks
+- PUT /api/subtasks/{id}  -> toggle is_done or update title
+- DELETE /api/subtasks/{id}
+
+4) Comments
+- POST /api/tasks/{id}/comments
+  Body: { author, content }
+- GET /api/tasks/{id}/comments
+
+5) Activity log
+- GET /api/tasks/{id}/activity
+
+6) Export
+- GET /api/tasks/export?format=csv -> returns CSV of tasks
+
+7) Real-time updates (optional)
+- GET /api/stream/updates  (SSE) -> sends simple events when tasks changed. Include a note: if server SSE not supported on target environment, front-end should fallback to polling every 5 seconds.
+
+--- SECURITY & STANDARDS ---
+- Use prepared statements / parameterized queries.
+- Sanitize inputs and escape outputs where needed.
+- Return appropriate HTTP status codes.
+- Use .htaccess to route /api/* requests to a single entry if helpful.
+- Keep code modular: config/db.php, api router (index.php), controllers for tasks/categories, and helper functions.
+
+--- FRONTEND (Single HTML page) ---
+Stack: HTML + Tailwind CSS + jQuery
+
+UI requirements:
+- Responsive Kanban board with three columns (To Do, In Progress, Done).
+- Each task card shows title, due date, priority color, category badge, assigned_to, and a quick menu (edit, delete).
+- Drag and drop tasks between columns. On drop, call POST /api/tasks/{id}/move with new status.
+- Create Task modal with inputs: title (required), description, category (dropdown + create new inline), priority, due date (date picker), assigned_to, add subtasks dynamically.
+- Edit Task modal or inline editor; allow adding/removing subtasks and comments.
+- Right-side panel or modal showing task detail: full description, subtasks checklist (check calls API to toggle), comments (list and add), activity log.
+- Top bar with search box, filters (category, priority, assigned), sort options, Export CSV button, and “Add Task” button.
+- Bulk selection mode: checkbox on task cards to select multiple and perform bulk actions (mark done / delete).
+- Loading indicators on AJAX calls and toast notifications for success/error.
+- Graceful fallback if SSE not available: poll /api/tasks every 5 seconds to refresh visible columns.
+
+JS specifics:
+- Use jQuery AJAX for all calls. Keep functions: loadTasks(filters), createTask(data), updateTask(id,data), moveTask(id,status), deleteTask(id), toggleSubtask(id, is_done).
+- Use HTML5 Drag & Drop or a lightweight jQuery drag plugin (no external CDNs required — include code in project).
+- Provide client-side validation: required fields, due_date valid, title length limit.
+- Use minimal, clean Tailwind styling (cards, modals, buttons). Keep UI accessible.
+
+--- FILE STRUCTURE (suggested) ---
+/backend
+  /config
+    db.php
+  /controllers
+    TaskController.php
+    CategoryController.php
+    SubtaskController.php
+    CommentController.php
+  /helpers
+    Response.php
+    Utils.php
+  api.php           -- main API router
+  stream.php        -- SSE stream endpoint (optional)
+  .htaccess
+/frontend
+  index.html
+  assets/
+    main.js
+    api.js   (AJAX wrappers)
+    styles.css (Tailwind built file or CDN link)
+  README.md
+/database
+  schema.sql
+  seed.sql
+/postman
+  TaskManager.postman_collection.json
+/README.md
+
+--- DELIVERABLES ---
+1. Full source code for backend and frontend.
+2. SQL schema + seed data.
+3. README.md with step-by-step setup (create DB, import SQL, configure db credentials, start server).
+4. Postman collection for all API endpoints.
+5. Short instruction how to enable SSE or fallback to polling.
+6. Screenshots of UI (optional: video steps).
+
+--- ACCEPTANCE CRITERIA (for tests) ---
+- Creating, editing, deleting tasks and subtasks works and reflects in UI without full page reload.
+- Drag & drop changes status and persists.
+- Filters, search, export CSV work.
+- API returns correct JSON with HTTP status codes.
+- SSE pushes update events to client OR polling keeps UI in sync.
+
+--- EXTRA (if asked) ---
+If you want, also provide:
+- Complete backend PHP files and frontend HTML/JS code ready to run.
+- A compact script to seed test data and create DB automatically.
+
+Build the project now and provide the full code files, SQL, and README. Keep the code simple, well-commented, and modular. Use clear function names and provide examples of API requests/responses in README.
+Make the proper directory structure in 3 layer UI backend and database folders
