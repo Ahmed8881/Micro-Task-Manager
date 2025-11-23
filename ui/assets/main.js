@@ -3,62 +3,30 @@
  * Handles all UI interactions and business logic
  */
 
-const TaskManager = {
-    // Application state
-    currentFilters: {
-        search: '',
-        category_id: '',
-        priority: '',
-        assigned_to: '',
-        sort: 'created_at'
-    },
-    currentTask: null,
-    categories: [],
-    bulkMode: false,
-    selectedTasks: new Set(),
-    
-    // Initialize the application
-    init: function() {
-        this.bindEvents();
-        this.loadCategories();
-        this.loadTasks();
-        this.setupDragAndDrop();
-        RealtimeUpdates.init();
-    },
-    
-    // Bind all event handlers
-    bindEvents: function() {
-        // Modal events
-        $('#addTaskBtn').on('click', () => this.showTaskModal());
-        $('#closeModalBtn, #cancelBtn').on('click', () => this.hideTaskModal());
-        $('#closeDetailModalBtn').on('click', () => this.hideTaskDetailModal());
-        $('#closeCategoryModalBtn, #cancelCategoryBtn').on('click', () => this.hideCategoryModal());
-        
-        // Form submissions
-        $('#taskForm').on('submit', (e) => this.handleTaskSubmit(e));
-        $('#categoryForm').on('submit', (e) => this.handleCategorySubmit(e));
-        
-        // Filter events
-        $('#searchInput').on('input', debounce(() => this.applyFilters(), 500));
-        $('#categoryFilter, #priorityFilter, #assignedFilter, #sortFilter').on('change', () => this.applyFilters());
-        
-        // Action buttons
-        $('#exportBtn').on('click', () => this.exportTasks());
-        $('#refreshBtn').on('click', () => this.loadTasks());
-        $('#addCategoryBtn').on('click', () => this.showCategoryModal());
-        $('#addSubtaskBtn').on('click', () => this.addSubtaskField());
-        
-        // Bulk actions
-        $('#bulkModeBtn').on('click', () => this.toggleBulkMode());
-        $('#bulkDeleteBtn').on('click', () => this.bulkDeleteTasks());
-        $('#bulkCompleteBtn').on('click', () => this.bulkCompleteTasks());
-        
-        // Close modals when clicking outside
-        $('.fixed.inset-0').on('click', function(e) {
-            if (e.target === this) {
-                $(this).addClass('hidden');
-            }
-        });
+// SPA navigation logic
+document.addEventListener('DOMContentLoaded', function() {
+    const mainContent = document.getElementById('mainContent');
+    const navKanban = document.getElementById('navKanban');
+    const navDashboard = document.getElementById('navDashboard');
+
+    function loadKanban() {
+        fetch('kanban.html')
+            .then(res => res.text())
+            .then(html => { mainContent.innerHTML = html; });
+    }
+
+    function loadDashboard() {
+        fetch('dashboard-view.html')
+            .then(res => res.text())
+            .then(html => { mainContent.innerHTML = html; });
+    }
+
+    if (navKanban) navKanban.addEventListener('click', loadKanban);
+    if (navDashboard) navDashboard.addEventListener('click', loadDashboard);
+
+    // Load Kanban by default
+    if (mainContent) loadKanban();
+});
     },
     
     // Load categories from API

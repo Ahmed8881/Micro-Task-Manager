@@ -1,0 +1,44 @@
+<!-- Dashboard Content -->
+<div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">Dashboard</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-blue-50 rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold mb-2">Total Tasks</h3>
+            <div id="totalTasks" class="text-3xl font-bold text-blue-500">0</div>
+        </div>
+        <div class="bg-blue-50 rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold mb-2">Tasks by Status</h3>
+            <canvas id="statusChart" height="120"></canvas>
+        </div>
+        <div class="bg-blue-50 rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold mb-2">Tasks by Category</h3>
+            <canvas id="categoryChart" height="120"></canvas>
+        </div>
+    </div>
+    <div class="bg-blue-50 rounded-lg shadow p-6 mb-8">
+        <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
+        <ul id="activityFeed" class="space-y-2 text-gray-700"></ul>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-blue-50 rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold mb-4">Quick Add Task</h3>
+            <form id="quickAddTaskForm" class="space-y-2">
+                <input type="text" name="title" placeholder="Task Title" class="w-full border rounded p-2">
+                <textarea name="description" placeholder="Description" class="w-full border rounded p-2"></textarea>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add Task</button>
+            </form>
+            <div id="quickAddTaskMsg" class="mt-2 text-green-600"></div>
+        </div>
+        <div class="bg-blue-50 rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold mb-4">Quick Add Category</h3>
+            <form id="quickAddCategoryForm" class="space-y-2">
+                <input type="text" name="name" placeholder="Category Name" class="w-full border rounded p-2">
+                <input type="color" name="color" value="#10B981" class="w-12 h-8 border rounded">
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Add Category</button>
+            </form>
+            <div id="quickAddCategoryMsg" class="mt-2 text-green-600"></div>
+        </div>
+    </div>
+    <script src="assets/dashboard.js"></script>
+    <script src="assets/dashboard-charts.js"></script>
+</div>
